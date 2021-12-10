@@ -159,6 +159,9 @@ class Database:
         sql = "SELECT test_number, test_name FROM test_table WHERE owner_id = $1"
 
         return await self.execute(sql, owner_id,  fetch=True)
+
+    async def delete_test_table(self):
+        await self.execute("DELETE FROM test_table WHERE TRUE", execute=True)
     
 #=======================================================================================================
 
@@ -196,9 +199,9 @@ class Database:
 
 # count_test_participations() count times how many time participated in tests:
 
-    async def count_test_participations(self, user_id ):
-        sql = "SELECT COUNT(test_number) FROM test_config WHERE user_id = $1"
-        return await self.execute(sql, user_id, fetchval=True)
+    async def count_test_participations(self, user_id, test_number):
+        sql = "SELECT COUNT(test_number) FROM test_config WHERE user_id = $1 and where test_number = $2"
+        return await self.execute(sql, user_id,test_number,  fetchval=True)
 
 
 # dashboard sorted db by results and time 
@@ -220,4 +223,7 @@ class Database:
             return True
         else:
             return False
+
+    async def delete_config(self):
+        await self.execute("DELETE FROM test_config WHERE TRUE", execute=True)
 

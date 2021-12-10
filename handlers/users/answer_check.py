@@ -5,6 +5,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.builtin import Command
 
 from datetime import datetime
+from keyboards.default.back import back
 
 from loader import db, dp
 
@@ -12,8 +13,9 @@ from loader import db, dp
 
 @dp.message_handler(Command("send_answers"))
 async def precheck_answers(message: Message, state: FSMContext):
-    await message.answer("Test raqamini yuboring")
+    await message.answer("Test raqamini yuboring", reply_markup=back)
     await state.set_state("test_number")
+
 
 
 @dp.message_handler(state="test_number")
@@ -34,34 +36,55 @@ async def check_test_number(message: Message, state: FSMContext):
                 end = test_data["end_date"]
                 print("bu yerga keldi1")
                 if start and end:
-                    print("bu_yergagam2")
+                    
                     start = datetime(int(start[6:10]), int(start[3:5]), int(start[:2]), int(start[11:13]), int(start[14:16]))
                     end = datetime(int(end[6:10]), int(end[3:5]), int(end[:2]), int(end[11:13]), int(end[14:16]))
                     now = datetime.now()
                     if start > now:
-                        await message.answer("Bu test hali boshlanmagan birozdan so'ng urunib ko'ring")
+                        print(start > now)
+                        await message.answer("Bu test hali boshlanmagan birozdan so'ng urunib ko'ring", reply_markup=back)
                     else:
                         if end > now:
-                            await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli bo'ling sizda faqatgina bitta javob yuborish imkoni bor")
+                            print(end, now)
+                            await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli bo'ling sizda faqatgina bitta javob yuborish imkoni bor", reply_markup=back)
                             await state.set_state("check_answers")
                             await state.update_data({
                                 "test_number" : number
                             })
                         else:
-                            await message.answer("Afsus bu test allaqachon tugagan 😔 \nbosh menuga qaytish uchun /start  bosing")
+                            await message.answer("Afsus bu test allaqachon tugagan 😔 \nbosh menuga qaytish uchun /start  bosing", reply_markup=back)
                             await state.finish()
-                else:
-                    await state.set_state("check_answers")
-                    await state.update_data({
-                                "test_number" : number
-                            })
-                    await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
-bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
+                elif start:
+                    now = datetime.now()
+                    start = datetime(int(start[6:10]), int(start[3:5]), int(start[:2]), int(start[11:13]), int(start[14:16]))
+                    if start>now:
+                        await message.answer("Bu test hali boshlanmagan birozdan so'ng urunib ko'ring", reply_markup=back)
+                    else:
 
+                        await state.set_state("check_answers")
+                        await state.update_data({
+                                    "test_number" : number
+                                })
+                        await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
+bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
+                else:
+                    end = datetime(int(end[6:10]), int(end[3:5]), int(end[:2]), int(end[11:13]), int(end[14:16]))
+                    now = datetime.now()
+                    if end > now:
+                        await state.set_state("check_answers")
+                        await state.update_data({
+                                    "test_number" : number
+                                })
+                        await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
+bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
+                    else:
+                        await message.answer("Afsus bu test allaqachon tugagan 😔 \nbosh menuga qaytish uchun /start  bosing", reply_markup=back)
+                        await state.finish()
+                    
 
 
     except:
-        await message.answer("Iltimos faqat sonlardan foydalaning")
+        await message.answer("Iltimos faqat sonlardan foydalaning", reply_markup=back)
 
 
 
@@ -97,6 +120,7 @@ async def check_answers(message: Message, state: FSMContext):
 
         await message.answer(f"Javoblaringiz qabul qilindi \nto'g'ri javoblar soni: {togri_javob}\nreyting \
             natijalarini test ykunlangandan keyin olasiz sog' bo'ling!")
+        await state.finish()
 
     else:
         await message.answer(f"Siz yuborgan javoblar soni {len(user_answer)} umumiy test savollari soniga teng emas \

@@ -2,142 +2,160 @@ import asyncio
 from aiogram.types.message import Message
 from telegraph import Telegraph 
 from typing import AnyStr
-from aiogram import types
+from aiogram import bot, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.builtin import Command
 from aiogram.dispatcher.storage import DisabledStorage
 from aiogram.types import ReplyKeyboardRemove , InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 from keyboards.default.skip_date_keyboard import skip_button
-
-
-
+from keyboards.default.back import back
 
 from loader import db, dp
 
 
 
+@dp.message_handler(Command("clean"))
+async def clean_db(message:Message):
+    await db.delete_test_table()
+    await db.delete_config()
+    await message.answer("cleaned")
+
+
 # to collect all messages of user in one message with state 
 @dp.message_handler(Command("add_test"))
 async def bot_start(message: types.Message, state: FSMContext):
-    await message.answer("Demak yangi test qo'shmoqchisiz, yaxshi, testni qanday nomlaymiz ?", reply_markup=ReplyKeyboardRemove())
+    await message.answer("Demak yangi test qo'shmoqchisiz, yaxshi, testni qanday nomlaymiz ?", reply_markup=back)
     await state.set_state("test_name")
 
 
 @dp.message_handler(state="test_name")
 async def bot_start(message: types.Message, state: FSMContext):
     test = message.text
-    await state.update_data({
-        "test_name" : test
-    })
-    test = message.text
-
-    x = datetime.now()
-
-    day = x.strftime("%d")
-    month = x.strftime("%m")
-    year = x.strftime("%Y")
-    hours = x.strftime("%H")
-    minute = x.strftime("%M")
-
-    
-    await message.answer(f"Yaxshi, ushbu test qachon \
-boshlanadi ?\n\nVaqtni KK.OO.YYYY SS:MM ko'rinishida kiriting,\
-bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\nMM - minut\n\nMasalan: {day}.{month}.{year} {hours}:{minute}", reply_markup=skip_button)
-    
-    await state.set_state("time")
-
-
-@dp.message_handler(state="time")
-async def bot_start(message: types.Message, state: FSMContext):
-    test = message.text
-    x = datetime.now()
-    day = x.strftime("%d")
-    month = x.strftime("%m")
-    year = x.strftime("%Y")
-    hours = x.strftime("%H")
-    minute = x.strftime("%M")
-    if test != "skip":        
-        
-
-        try:
-
-            year1 = test[6:10]
-            month1 =test[3:5]
-            day1 = test[:2]
-            hour1 = test[11:13]
-            minute1 = test[14:16]
-            s_date = datetime(int(year1), int(month1) ,int(day1) ,int(hour1) ,int(minute1))
-            if x < s_date:
-                await state.update_data({
-                    "start_time" : test
-                })
-                await state.set_state("end_time")
-                await message.answer(f"Boshlanish vaqti saqlandi,\
-qachon yakunlanadi ?\nVaqtni KK.OO.YYYY SS:MM ko'rinishida\
-kiriting, bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\n\nMM -\
-minut\nMasalan: {day}.{month}.{year} {hours}:{minute}", reply_markup=skip_button)
-            else:
-                await message.answer("O'tib ketgan vaqtda testni boshlay olmayman boshqa sana kiritib ko'ring")
-        except:
-            await message.answer("Sana formatini xato kiritdingiz qayta tekshiring!")
+    if test == "🔙 ortga":
+        state.finish()
+        await message.answer("Yaxshi siz test yaratishni bekor qildingiz")
     else:
-        await state.set_state("end_time")
-        await message.answer(f"Boshlanish vaqti saqlandi,\
-qachon yakunlanadi ?\nVaqtni KK.OO.YYYY SS:MM ko'rinishida\
-kiriting, bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\n\nMM -\
-minut\nMasalan: {day}.{month}.{year} {hours}:{minute}", reply_markup=skip_button)
-       
+            
         await state.update_data({
-                    "start_time" : test
-                })
+            "test_name" : test
+        })
+        test = message.text
 
-
-@dp.message_handler(state="end_time")
-async def bot_start(message: types.Message, state: FSMContext):
-    test = message.text
-    x = datetime.now()
-    if test != "skip":
+        x = datetime.now()
 
         day = x.strftime("%d")
         month = x.strftime("%m")
         year = x.strftime("%Y")
         hours = x.strftime("%H")
         minute = x.strftime("%M")
-        try:            
-            year = test[6:10]
-            month =test[3:5]
-            day = test[:2]
-            hour = test[11:13]
-            minute = test[14:16]
-            s_date = datetime(int(year), int(month) ,int(day) ,int(hour) ,int(minute))
 
-            data = await state.get_data()
-            start = data["start_time"]
-            year1 = start[6:10]
-            month1 =start[3:5]
-            day1 = start[:2]
-            hour1 = start[11:13]
-            minute1 = start[14:16]
+        
+        await message.answer(f"Yaxshi, ushbu test qachon \
+boshlanadi ?\n\nVaqtni <b>KK.OO.YYYY SS:MM </b>ko'rinishida kiriting,\
+bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\nMM - minut\n\nMasalan: {day}.{month}.{year} {hours}:{minute}", reply_markup=skip_button)
+        
+        await state.set_state("time")
 
-            start_date = datetime(int(year1), int(month1) ,int(day1) ,int(hour1) ,int(minute1))
-            
-            if x < s_date:
-                await state.update_data({
-                    "end_time" : test
-                })
-                await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd")
-                await state.set_state("answers")
-            else:
-                await message.answer("Tugashni boshlashdan oldin qila olmayman ")
-        except:
-            await message.answer("Sana formatini xato kiritdingiz qayta tekshiring!")
+
+@dp.message_handler(state="time")
+async def bot_start(message: types.Message, state: FSMContext):
+    test = message.text
+    if test == "🔙 ortga":
+        state.finish()
+        await message.answer("Yaxshi siz test yaratishni bekor qildingiz")
     else:
-        await state.set_state("answers")
-        await state.update_data({
-                    "end_time" : test
-                })
-        await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd")
+        x = datetime.now()
+        day = x.strftime("%d")
+        month = x.strftime("%m")
+        year = x.strftime("%Y")
+        hours = x.strftime("%H")
+        minute = x.strftime("%M")
+        if test != "skip":        
+            
+
+            try:
+
+                year1 = test[6:10]
+                month1 =test[3:5]
+                day1 = test[:2]
+                hour1 = test[11:13]
+                minute1 = test[14:16]
+                s_date = datetime(int(year1), int(month1) ,int(day1) ,int(hour1) ,int(minute1))
+                if x < s_date:
+                    await state.update_data({
+                        "start_time" : test
+                    })
+                    await state.set_state("end_time")
+                    await message.answer(f"Boshlanish vaqti saqlandi,\
+qachon yakunlanadi ?\nVaqtni <b>KK.OO.YYYY SS:MM </b>ko'rinishida\
+kiriting, bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\n\nMM -\
+minut\nMasalan: {day}.{month}.{year} {hours}:{minute}", reply_markup=skip_button)
+                else:
+                    await message.answer("O'tib ketgan vaqtda testni boshlay olmayman boshqa sana kiritib ko'ring")
+            except:
+                await message.answer("Sana formatini xato kiritdingiz qayta tekshiring!", reply_markup=back)
+        else:
+            await state.set_state("end_time")
+            await message.answer(f"Boshlanish vaqti saqlandi,\
+qachon yakunlanadi ?\nVaqtni KK.OO.YYYY SS:MM ko'rinishida\
+kiriting, bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\n\nMM -\
+minut\nMasalan: <b>{day}.{month}.{year} {hours}:{minute}</b>", reply_markup=skip_button)
+    
+            await state.update_data({
+                        "start_time" : test
+                    })
+
+
+@dp.message_handler(state="end_time")
+async def bot_start(message: types.Message, state: FSMContext):
+    test = message.text
+    if test == "🔙 ortga":
+        state.finish()
+        await message.answer("Yaxshi siz test yaratishni bekor qildingiz")
+    else:
+        x = datetime.now()
+        if test != "skip" :
+
+            day = x.strftime("%d")
+            month = x.strftime("%m")
+            year = x.strftime("%Y")
+            hours = x.strftime("%H")
+            minute = x.strftime("%M")
+            try:            
+                year = test[6:10]
+                month =test[3:5]
+                day = test[:2]
+                hour = test[11:13]
+                minute = test[14:16]
+                end_date = datetime(int(year), int(month) ,int(day) ,int(hour) ,int(minute))
+
+                # data = await state.get_data()
+                # start = data["start_time"]
+                # year1 = start[6:10]
+                # month1 =start[3:5]
+                # day1 = start[:2]
+                # hour1 = start[11:13]
+                # minute1 = start[14:16]
+
+                # start_date = datetime(int(year1), int(month1) ,int(day1) ,int(hour1) ,int(minute1))
+                
+                if x < end_date : #and end_date>start_date:
+                    await state.update_data({
+                        "end_time" : test
+                    })
+                    await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=ReplyKeyboardRemove())
+                    await state.set_state("answers")
+                else:
+                    await message.answer("Tugashni boshlashdan oldin qilishning ilojin yo'q ", reply_markup=back)
+            except:
+                await message.answer("Sana formatini xato kiritdingiz qayta tekshiring!", reply_markup=back)
+        else:
+            await state.set_state("answers")
+            await state.update_data({
+                        "end_time" : test
+                    })
+            await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=ReplyKeyboardRemove())
 
 
 
@@ -145,39 +163,50 @@ async def bot_start(message: types.Message, state: FSMContext):
 @dp.message_handler(state="answers")
 async def bot_start(message: types.Message, state: FSMContext):
     text = message.text
-    await state.update_data({
-        "answers" : text})
-    
-    data = await state.get_data()
-    print(data)
-    if data["end_time"] =="skip" and data["start_time"] =="skip":
-        await db.add_test(owner_id=message.from_user.id, test_name=data["test_name"], answers=data["answers"])
-    elif data["start_time"] != "skip" and data["end_time"] !="skip":
-         await db.add_test(owner_id=message.from_user.id, test_name=data["test_name"], answers=data["answers"],start_date=data["start_time"] , end_date=data["end_time"] )
-    elif data["end_time"] =="skip":
-       await db.add_test(owner_id=message.from_user.id, test_name=data["test_name"], answers=data["answers"], start_date=data["start_time"] )   
+    if text == "🔙 ortga":
+        state.finish()
+        await message.answer("Yaxshi siz test yaratishni bekor qildingiz")
     else:
+        await state.update_data({
+            "answers" : text})
+        
+        data = await state.get_data()
+        print(data)
+        if data["end_time"] =="skip" and data["start_time"] =="skip":
+            await db.add_test(owner_id=message.from_user.id, test_name=data["test_name"], answers=data["answers"])
+        elif data["start_time"] != "skip" and data["end_time"] !="skip":
+            await db.add_test(owner_id=message.from_user.id, test_name=data["test_name"], answers=data["answers"],start_date=data["start_time"] , end_date=data["end_time"] )
+        elif data["end_time"] =="skip":
+            await db.add_test(owner_id=message.from_user.id, test_name=data["test_name"], answers=data["answers"], start_date=data["start_time"] )   
+        else:
 
-        await db.add_test(owner_id=message.from_user.id, test_name=data["test_name"], answers=data["answers"], end_date=data["end_time"] )
-    await state.finish()
-    # to return current test number from database 
-    await asyncio.sleep(1)
-    current_test_number = await db.select_inserted_test_number()
-    print(current_test_number)
-    await message.answer(f"sizning testingiz\n\n\
-test number - {current_test_number}\n \
-test name - {data['test_name']}\n\n\
-start time - {data['start_time']}\n\n\
-end time - {data['end_time']} \n\n\
-answers - {data['answers']} \n\n@current_time_123bot", reply_markup=ReplyKeyboardRemove())
+            await db.add_test(owner_id=message.from_user.id, test_name=data["test_name"], answers=data["answers"], end_date=data["end_time"] )
+        
+        await state.finish()
+        # to return current test number from database 
+        current_test_number = await db.select_inserted_test_number()
+        
+        all_info = f"sizning testingiz\n\
+#️⃣ Test raqami: <b>{current_test_number}</b>\n\
+📌 Test nomi: <i>{data['test_name']}</i>\n\
+🟢Boshlanish vaqti - <i>{data['start_time']}</i>\n\n\
+🔴Tugash vaqti - <i>{data['end_time']}</i>\n\n\
+@current_time_123bot beminnat yordamchingiz!"
+        await message.answer(all_info)
 
+        await message.answer(f"sizning testingiz\n\
+#️⃣ Test raqami: <b>{current_test_number}</b>\n\
+📌 Test nomi: <i>{data['test_name']}</i>\n\
+🔐 To'g'ri javoblar: <i>{data['answers']}</i>\n\n\
+🟢Boshlanish vaqti - <i>{data['start_time']}</i>\n\n\
+🔴Tugash vaqti - <i>{data['end_time']}</i>\n\n\
+@current_time_123bot beminnat yordamchingiz!", reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler(Command("my_tests"))
 async def my_tests(message: types.Message, state:FSMContext):
     my_test = await db.select_test_numbers(message.from_user.id)
     my_tests = "test raqami:    test nomi\n"
-    print(my_test)
     if my_test:
             
         for test in my_test:
@@ -192,55 +221,68 @@ async def my_tests(message: types.Message, state:FSMContext):
 
     await message.answer(my_tests, reply_markup=ReplyKeyboardRemove())
     await state.set_state("test_results")
-    await message.answer("Natijalar bilan ko'rish uchun test raqamini yuboring")
-    await message.answer("bekor qilish uchun /start")
+    await message.answer("Natijalar bilan ko'rish uchun test raqamini yuboring", reply_markup=back)
+   
 
 
 
 @dp.message_handler(state="test_results")
 async def my_tests(message: types.Message, state:FSMContext):
+    
     t_number = message.text
-    try:
-
-        my_test = await db.select_test_with_results(owner_id=message.from_user.id, test_number=int(t_number))
-        print("if dan oldin")
-        if my_test:
-            print("2 if ga kirdi ")
-            full_info = f" Test raqami {my_test[0]}\n Test nomi   {my_test[1]}\n Test javobi  {my_test[2]}\n Boshlanish vaqti  {my_test[3]}\n Tugash vaqti   {my_test[4]}\n"
-            dashboard = await db.select_dashboard(int(t_number))
-            print(dashboard)
-            if dashboard:     
-                print("if ga kirish")
-                text = f"{int(t_number)} raqamli test natijalari <br>"
-                for x in dashboard:
-                    text +=f"{x[0]}."
-                    text +=f" Ism {x[1]}"
-                    text +=f" Javoblar  {x[2]} "
-                    text +=f" Natija {x[3]}<br><br>"
-
-            print("shu yerga keldi")
-            telegraph = Telegraph()
-            print(telegraph.create_account(short_name='Bobir_Mardonov', author_name='Bobir Mardonov', author_url="http://t.me/Bobir_Mardonov"))
-
-            response = telegraph.create_page(f"Qatnashuvchilar reyting test {my_test[0]} {my_test[1]}",html_content=f"<p>{text}</p>")
-            urls = response['url']
+    if t_number.isdigit():
             
-            result_button = InlineKeyboardMarkup(
-                inline_keyboard=[
-                    [
-                    InlineKeyboardButton(text="natijalarni ko'rish 🚀", url=urls)
-                    ],
-                ])
-            
-            await message.answer(full_info,reply_markup=result_button )
-            await state.finish
+        if t_number == "🔙 ortga":
+            state.finish()
+            await message.answer("Yaxshi siz test topshirishni bekor qildingiz")
         else:
-            await message.answer(f"{int(t_number)} raqamli test sizga tegishli emas yoki unda hech kim qatnashmagan if else da  ")
-            await state.finish()
+            
 
-    except:
-        await message.answer(f"{int(t_number)} raqamli test sizga tegishli emas yoki unda hech kim qatnashmagan ")
-        await state.finish()
+            my_test = await db.select_test_with_results(owner_id=message.from_user.id, test_number=int(t_number))
+            
+            if my_test:
+                print("2 if ga kirdi ")
+                full_info = f"Test raqami <b>{my_test[0]}</b>\n Test nomi   <b>{my_test[1]}</b>\n Test javobi  <b>{my_test[2]}</b>\n Boshlanish vaqti  \
+<b>{my_test[3]}</b>\n Tugash vaqti   {my_test[4]}\n\n Qatnashuvchilar soni: {await db.count_participants_via_test(int(my_test[0]))}"
+                dashboard = await db.select_dashboard(int(t_number))
+                print(dashboard)
+                if dashboard:     
+                    print("if ga kirish")
+                    text = f"{int(t_number)} raqamli test natijalari <br>"
+                    for x in dashboard:
+                        text +=f"{x[0]}.🏅"
+                        text +=f" Ism: <b>{x[1]}</b>"
+                        text +=f" Javoblar:  <b>{x[2]}</b>"
+                        text +=f" Natija: <b>{x[3]}</b><br><br>"
+
+                    print("shu yerga keldi")
+                    telegraph = Telegraph()
+                    print(telegraph.create_account(short_name='Bobir_Mardonov', author_name='Bobir Mardonov', author_url="http://t.me/Bobir_Mardonov"))
+
+                    response = telegraph.create_page(f"Qatnashuvchilar reyting test {my_test[0]} {my_test[1]}",html_content=f"<p>{text}</p>")
+                    urls = response['url']
+                    
+                    result_button = InlineKeyboardMarkup(
+                        inline_keyboard=[
+                            [
+                            InlineKeyboardButton(text="Natijalarni ko'rish 🚀", url=urls)
+                            ],
+                        ])
+                    
+                    await message.answer(full_info,reply_markup=result_button)
+                    await state.finish()
+                else:
+                    await message.answer("Qatnashchilar topilmadi ")
+                    await state.finish()
+            else:
+                await message.answer(f"{int(t_number)} raqamli test sizga tegishli emas yoki unda hech kim qatnashmagan", reply_markup=back)
+            
+
+    
+            # await message.answer(f"{t_number} ❌ iltimos faqat sonlardan foydalaning  ", reply_markup=back)
+    else:
+        await message.answer(f"{t_number} ❌ iltimos faqat sonlardan foydalaning! ", reply_markup=back)
+
 
 
 
@@ -254,6 +296,12 @@ async def update_name_state(message:Message, state:FSMContext):
 @dp.message_handler(state="update_name")
 async def update_name(message: Message, state: FSMContext):
     tetx = message.text
-    await db.update_user_full_name(tetx, telegram_id=message.from_user.id)
-    await message.answer("Ism Familyangiz muvaffaqiyatli yangilandi!")
+    if tetx == "🔙 ortga":
+        state.finish()
+        await message.answer("Yaxshi Ism yangilishini bekor qildingiz")
+    else:
+        await db.update_user_full_name(tetx, telegram_id=message.from_user.id)
+        await message.answer("Ism Familyangiz muvaffaqiyatli yangilandi!")
+
+
 
