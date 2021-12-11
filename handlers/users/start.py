@@ -23,5 +23,6 @@ async def bot_start(message: types.Message, state: FSMContext):
     count = await db.count_users()
     msg = f"{user[1]} bazaga qo'shildi.\nBazada {count} ta foydalanuvchi bor."
     await bot.send_message(chat_id=ADMINS[0], text=msg)
+    # await state.set_state("start_finish")
     await state.finish()
-    
+
