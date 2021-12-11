@@ -20,11 +20,13 @@ async def precheck_answers(message: Message, state: FSMContext):
 
 @dp.message_handler(state="test_number")
 async def check_test_number(message: Message, state: FSMContext):
-    try:
+    
+    number = message.text
+    if number.isdigit():
         number = int(message.text)
         if await db.check_config_participation(message.from_user.id, test_number=number):
             await message.answer("Siz oldin bu testda qatnashgansiz siz bitta testga bir\
- marta qatnasha olasiz boshqa testlarga harakat qilib ko'ring")
+marta qatnasha olasiz boshqa testlarga harakat qilib ko'ring")
         else:
                 
             current_test_number = await db.select_inserted_test_number()
@@ -73,6 +75,10 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
                     if end > now:
                         await state.set_state("check_answers")
                         await state.update_data({
+                   
+                   
+                   
+                   
                                     "test_number" : number
                                 })
                         await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
@@ -80,12 +86,9 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
                     else:
                         await message.answer("Afsus bu test allaqachon tugagan 😔 \nbosh menuga qaytish uchun /start  bosing", reply_markup=back)
                         await state.finish()
-                    
-
-
-    except:
+    else:
         await message.answer("Iltimos faqat sonlardan foydalaning", reply_markup=back)
-
+                        
 
 
         
@@ -119,7 +122,7 @@ async def check_answers(message: Message, state: FSMContext):
                 notogri_javob += 1
 
         await message.answer(f"Javoblaringiz qabul qilindi \nto'g'ri javoblar soni: {togri_javob}\nreyting \
-            natijalarini test ykunlangandan keyin olasiz sog' bo'ling!")
+natijalarini test ykunlangandan keyin olasiz sog' bo'ling!")
         await state.finish()
 
     else:
