@@ -45,7 +45,8 @@ class Database:
         id SERIAL PRIMARY KEY,
         full_name VARCHAR(255) NOT NULL,
         username varchar(255) NULL,
-        telegram_id BIGINT NOT NULL UNIQUE 
+        telegram_id BIGINT NOT NULL UNIQUE,
+        phone_number BIGINT NULL UNIQUE
         );
         """
         await self.execute(sql, execute=True)
@@ -59,7 +60,7 @@ class Database:
         return sql, tuple(parameters.values())
 
     async def add_user(self, full_name, username, telegram_id):
-        sql = "INSERT INTO users (full_name, username, telegram_id) VALUES($1, $2, $3) returning *"
+        sql = "INSERT INTO Users (full_name, username, telegram_id) VALUES($1, $2, $3) returning *"
         return await self.execute(sql, full_name, username, telegram_id, fetchrow=True)
 
     async def select_all_users(self):
@@ -208,7 +209,7 @@ class Database:
 
     async def select_dashboard(self, test_number):
         sql = """select ROW_NUMBER () over (order by test_config.results desc), 
-        users.full_name, test_config.answers, test_config.results  
+        users.full_name, test_config.answers, test_config.results, users.phone_number 
         from test_config 
         left outer join users on  test_config.user_id = users.telegram_id where test_config.test_number = $1"""
         return await self.execute(sql, test_number, fetch=True)

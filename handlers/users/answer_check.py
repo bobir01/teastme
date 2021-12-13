@@ -56,27 +56,24 @@ marta qatnasha olasiz boshqa testlarga harakat qilib ko'ring")
                         else:
                             await message.answer("Afsus bu test allaqachon tugagan 😔 \nbosh menuga qaytish uchun /start  bosing", reply_markup=back)
                             await state.finish()
-                elif start:
+                elif start and not end:
                     now = datetime.now()
                     start = datetime(int(start[6:10]), int(start[3:5]), int(start[:2]), int(start[11:13]), int(start[14:16]))
                     if start>now:
                         await message.answer("Bu test hali boshlanmagan birozdan so'ng urunib ko'ring", reply_markup=back)
                     else:
-
                         await state.set_state("check_answers")
                         await state.update_data({
                                     "test_number" : number
                                 })
                         await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
-                else:
+                elif end and not start:
                     end = datetime(int(end[6:10]), int(end[3:5]), int(end[:2]), int(end[11:13]), int(end[14:16]))
                     now = datetime.now()
                     if end > now:
                         await state.set_state("check_answers")
-                        await state.update_data({
-                   
-                   
+                        await state.update_data({                   
                    
                    
                                     "test_number" : number
@@ -86,6 +83,14 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
                     else:
                         await message.answer("Afsus bu test allaqachon tugagan 😔 \nbosh menuga qaytish uchun /start  bosing", reply_markup=back)
                         await state.finish()
+                else:  # ikkalasiyam skip bo'lsa 
+                    await state.set_state("check_answers")
+                    await state.update_data({                                      
+                                    "test_number" : number
+                                })
+                    await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
+bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
+
     else:
         await message.answer("Iltimos faqat sonlardan foydalaning", reply_markup=back)
                         

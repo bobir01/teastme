@@ -253,8 +253,8 @@ async def my_tests(message: types.Message, state:FSMContext):
                         text +=f"{x[0]}.🏅"
                         text +=f" Ism: <b>{x[1]}</b>"
                         text +=f" Javoblar:  <b>{x[2]}</b>"
-                        text +=f" Natija: <b>{x[3]}</b><br><br>"
-
+                        text +=f" Natija: <b>{x[3]}</b><br>"
+                        text +=f" Raqam: <b>{x[4]}</b><br><br>"
                     print("shu yerga keldi")
                     telegraph = Telegraph()
                     print(telegraph.create_account(short_name='Bobir_Mardonov', author_name='Bobir Mardonov', author_url="http://t.me/Bobir_Mardonov"))
