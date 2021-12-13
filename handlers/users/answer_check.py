@@ -6,14 +6,14 @@ from aiogram.dispatcher.filters.builtin import Command
 
 from datetime import datetime
 from keyboards.default.back import back
-
+from keyboards.default.main_menu import main_button
 from loader import db, dp
 
 
 
-@dp.message_handler(Command("send_answers"))
+@dp.message_handler(text="✅Test topshirish")
 async def precheck_answers(message: Message, state: FSMContext):
-    await message.answer("Test raqamini yuboring", reply_markup=back)
+    await message.answer("Test raqamini yuboring, \n\n bekor qilish uchun esa ortga tugmasidan foydaling", reply_markup=back)
     await state.set_state("test_number")
 
 
@@ -89,7 +89,7 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
                                     "test_number" : number
                                 })
                     await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
-bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
+bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=main_button)
 
     else:
         await message.answer("Iltimos faqat sonlardan foydalaning", reply_markup=back)
@@ -111,8 +111,6 @@ async def check_answers(message: Message, state: FSMContext):
     notogri_javob = 0
 
     if len(user_answer) == len(true_answers):
-        
-        
             
         list1 = []
         list2 = []
@@ -127,12 +125,12 @@ async def check_answers(message: Message, state: FSMContext):
                 notogri_javob += 1
 
         await message.answer(f"Javoblaringiz qabul qilindi \nto'g'ri javoblar soni: {togri_javob}\nreyting \
-natijalarini test ykunlangandan keyin olasiz sog' bo'ling!")
+natijalarini test ykunlangandan keyin olasiz sog' bo'ling!", reply_markup=main_button)
         await state.finish()
 
     else:
         await message.answer(f"Siz yuborgan javoblar soni {len(user_answer)} umumiy test savollari soniga teng emas \
-\nbilmagan savollarinizni taxminiy harflar bilan belgilang !")
+\nbilmagan savollarinizni taxminiy harflar bilan belgilang!")
 # bazaga kiritamiz 
     await db.insert_test_config(int(data["test_number"]), message.from_user.id, user_answer, int(togri_javob), datetime.now())
     await state.finish()

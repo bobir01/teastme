@@ -1,7 +1,6 @@
 import asyncio
 from aiogram.types.message import Message
 from telegraph import Telegraph 
-from typing import AnyStr
 from aiogram import bot, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.builtin import Command
@@ -10,12 +9,13 @@ from aiogram.types import ReplyKeyboardRemove , InlineKeyboardMarkup, InlineKeyb
 from datetime import datetime
 from keyboards.default.skip_date_keyboard import skip_button
 from keyboards.default.back import back
+from keyboards.default.main_menu import main_button
 
 from loader import db, dp
 
 
 
-@dp.message_handler(Command("clean"))
+@dp.message_handler(Command("clean"), state="*")
 async def clean_db(message:Message):
     await db.delete_test_table()
     await db.delete_config()
@@ -23,7 +23,7 @@ async def clean_db(message:Message):
 
 
 # to collect all messages of user in one message with state 
-@dp.message_handler(Command("add_test"))
+@dp.message_handler(text="🧑‍💻Test yaratish", state="*")
 async def bot_start(message: types.Message, state: FSMContext):
     await message.answer("Demak yangi test qo'shmoqchisiz, yaxshi, testni qanday nomlaymiz ?", reply_markup=back)
     await state.set_state("test_name")
@@ -33,7 +33,7 @@ async def bot_start(message: types.Message, state: FSMContext):
 async def bot_start(message: types.Message, state: FSMContext):
     test = message.text
     if test == "🔙 ortga":
-        state.finish()
+        
         await message.answer("Yaxshi siz test yaratishni bekor qildingiz")
     else:
             
@@ -130,16 +130,6 @@ async def bot_start(message: types.Message, state: FSMContext):
                 minute = test[14:16]
                 end_date = datetime(int(year), int(month) ,int(day) ,int(hour) ,int(minute))
 
-                # data = await state.get_data()
-                # start = data["start_time"]
-                # year1 = start[6:10]
-                # month1 =start[3:5]
-                # day1 = start[:2]
-                # hour1 = start[11:13]
-                # minute1 = start[14:16]
-
-                # start_date = datetime(int(year1), int(month1) ,int(day1) ,int(hour1) ,int(minute1))
-                
                 if x < end_date : #and end_date>start_date:
                     await state.update_data({
                         "end_time" : test
@@ -203,7 +193,7 @@ async def bot_start(message: types.Message, state: FSMContext):
 @current_time_123bot beminnat yordamchingiz!", reply_markup=ReplyKeyboardRemove())
 
 
-@dp.message_handler(Command("my_tests"))
+@dp.message_handler(text="ℹ️Mening testlarim")
 async def my_tests(message: types.Message, state:FSMContext):
     my_test = await db.select_test_numbers(message.from_user.id)
     my_tests = "test raqami:    test nomi\n"
@@ -213,7 +203,7 @@ async def my_tests(message: types.Message, state:FSMContext):
             my_tests +=f"{test[0]}                   |      {test[1]} \n"
             my_tests +="____________________________\n"
     else:
-        await message.answer("siz hali test yaratmadingiz \nyaratish uchun /add_test buyrug'ini tanlang")
+        await message.answer("siz hali test yaratmadingiz \nyaratish uchun Test yaratish buyrug'ini tanlang")
     
     counts = await db.count_user_tests(message.from_user.id)
     my_tests += f" sizning jami testlariniz soni  {counts}\n\n"
@@ -286,7 +276,7 @@ async def my_tests(message: types.Message, state:FSMContext):
 
 
 
-@dp.message_handler(Command("update_name"))
+@dp.message_handler(text="🔄Ismni yangilash")
 async def update_name_state(message:Message, state:FSMContext):
     await message.answer("Testlarda ismingiz telegram ismingiz orqali ro'yxatga olinadi\
  shuning uchun to'liq ismingiz bilan ro'yxatdan o'tishingizni maslahat beramiz \nIsm familyangizni yuboring: \
@@ -298,10 +288,11 @@ async def update_name(message: Message, state: FSMContext):
     tetx = message.text
     if tetx == "🔙 ortga":
         state.finish()
-        await message.answer("Yaxshi Ism yangilishini bekor qildingiz")
+        await message.answer(f"Yaxshi, Ism yangilishini bekor qildingiz")
     else:
         await db.update_user_full_name(tetx, telegram_id=message.from_user.id)
-        await message.answer("Ism Familyangiz muvaffaqiyatli yangilandi!")
+        await message.answer(f"Ism Familyangiz muvaffaqiyatli yangilandi!\n\
+hozirgi ismingiz {tetx}", reply_markup=main_button)
 
 
 

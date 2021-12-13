@@ -228,3 +228,8 @@ class Database:
     async def delete_config(self):
         await self.execute("DELETE FROM test_config WHERE TRUE", execute=True)
 
+    async def participated_tests(self, user_id):
+        sql = """
+        select ROW_NUMBER () over (order by test_number), test_number, answers, results, submition_time from test_config
+where user_id = $1 order by submition_time"""
+        return await self.execute(sql, user_id, fetch=True)
