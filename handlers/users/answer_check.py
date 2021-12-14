@@ -26,7 +26,7 @@ async def check_test_number(message: Message, state: FSMContext):
         number = int(message.text)
         if await db.check_config_participation(message.from_user.id, test_number=number):
             await message.answer("Siz oldin bu testda qatnashgansiz siz bitta testga bir\
-marta qatnasha olasiz boshqa testlarga harakat qilib ko'ring")
+marta qatnasha olasiz boshqa testlarga harakat qilib ko'ring", reply_markup=back)
         else:
                 
             current_test_number = await db.select_inserted_test_number()
@@ -67,7 +67,7 @@ marta qatnasha olasiz boshqa testlarga harakat qilib ko'ring")
                                     "test_number" : number
                                 })
                         await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
-bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
+bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                 elif end and not start:
                     end = datetime(int(end[6:10]), int(end[3:5]), int(end[:2]), int(end[11:13]), int(end[14:16]))
                     now = datetime.now()
@@ -79,7 +79,7 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
                                     "test_number" : number
                                 })
                         await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
-bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
+bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                     else:
                         await message.answer("Afsus bu test allaqachon tugagan 😔 \nbosh menuga qaytish uchun /start  bosing", reply_markup=back)
                         await state.finish()
@@ -89,7 +89,7 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!")
                                     "test_number" : number
                                 })
                     await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
-bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=main_button)
+bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
 
     else:
         await message.answer("Iltimos faqat sonlardan foydalaning", reply_markup=back)

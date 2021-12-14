@@ -8,7 +8,9 @@ aiogram = "~=2.14"
 environs = "~=8.0.0"
 asyncpg = "*"
 telegraph = {extras = ["aio"], version = "*"}
+aiograph = "*"
 
 [dev-packages]
+
 [requires]
 python_version = "3.8"

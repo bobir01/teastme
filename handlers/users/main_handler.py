@@ -1,6 +1,7 @@
 import asyncio
+from aiograph import Telegraph
 from aiogram.types.message import Message
-from telegraph import Telegraph 
+# from telegraph import Telegraph 
 from aiogram import bot, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.builtin import Command
@@ -40,7 +41,6 @@ async def bot_start(message: types.Message, state: FSMContext):
         await state.update_data({
             "test_name" : test
         })
-        test = message.text
 
         x = datetime.now()
 
@@ -134,7 +134,7 @@ async def bot_start(message: types.Message, state: FSMContext):
                     await state.update_data({
                         "end_time" : test
                     })
-                    await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=ReplyKeyboardRemove())
+                    await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=back)
                     await state.set_state("answers")
                 else:
                     await message.answer("Tugashni boshlashdan oldin qilishning ilojin yo'q ", reply_markup=back)
@@ -145,7 +145,7 @@ async def bot_start(message: types.Message, state: FSMContext):
             await state.update_data({
                         "end_time" : test
                     })
-            await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=ReplyKeyboardRemove())
+            await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=back)
 
 
 
@@ -190,7 +190,7 @@ async def bot_start(message: types.Message, state: FSMContext):
 🔐 To'g'ri javoblar: <i>{data['answers']}</i>\n\n\
 🟢Boshlanish vaqti - <i>{data['start_time']}</i>\n\n\
 🔴Tugash vaqti - <i>{data['end_time']}</i>\n\n\
-@current_time_123bot beminnat yordamchingiz!", reply_markup=ReplyKeyboardRemove())
+@current_time_123bot beminnat yordamchingiz!", reply_markup=main_button)
 
 
 @dp.message_handler(text="ℹ️Mening testlarim")
@@ -238,6 +238,7 @@ async def my_tests(message: types.Message, state:FSMContext):
                 print(dashboard)
                 if dashboard:     
                     print("if ga kirish")
+
                     text = f"{int(t_number)} raqamli test natijalari <br>"
                     for x in dashboard:
                         text +=f"{x[0]}.🏅"
@@ -246,16 +247,29 @@ async def my_tests(message: types.Message, state:FSMContext):
                         text +=f" Natija: <b>{x[3]}</b><br>"
                         text +=f" Raqam: <b>{x[4]}</b><br><br>"
                     print("shu yerga keldi")
-                    telegraph = Telegraph()
-                    print(telegraph.create_account(short_name='Bobir_Mardonov', author_name='Bobir Mardonov', author_url="http://t.me/Bobir_Mardonov"))
 
-                    response = telegraph.create_page(f"Qatnashuvchilar reyting test {my_test[0]} {my_test[1]}",html_content=f"<p>{text}</p>")
-                    urls = response['url']
+#======================================telegraph===========================================================================
+                    try:                 
+                        loop = asyncio.get_event_loop()
+                        telegraph = Telegraph()
+                        
+                        # telegraph = Telegraph()
+                        # print(telegraph.create_account(short_name='Bobir_Mardonov', author_name='Bobir Mardonov', author_url="http://t.me/Bobir_Mardonov"))
+                        await telegraph.create_account('Bobir_Mardonov')
+                        page = await telegraph.create_page(title=f"Qatnashuvchilar reyting testi {my_test[0]} {my_test[1]}",content=f"<p>{text}</p>")
+                        print('Created page:', page.url)
+                    except:
+                        pass
+                        print("xato bor")
+                    finally:
+                        await telegraph.close()
+                    
+                
                     
                     result_button = InlineKeyboardMarkup(
                         inline_keyboard=[
                             [
-                            InlineKeyboardButton(text="Natijalarni ko'rish 🚀", url=urls)
+                            InlineKeyboardButton(text="Natijalarni ko'rish 🚀", url=f"{page.url}")
                             ],
                         ])
                     
