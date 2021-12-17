@@ -48,8 +48,7 @@ testlar olishingiz mumkin. \n\nFoydalanish bo'yicha to'liq ma'lumot olish uchun 
             
             
             
-            await asyncio.sleep(15)
-            await a.delete()
+           
         else:
             result = (f"Iltimos botimizdan foydalanish uchun kanalimizga az'o bo'ling !:\n")
             await message.answer(result, reply_markup=check_button, disable_web_page_preview=True)
