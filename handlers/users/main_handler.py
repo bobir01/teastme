@@ -293,8 +293,7 @@ async def my_tests(message: types.Message, state:FSMContext):
 @dp.message_handler(text="🔄Ismni yangilash")
 async def update_name_state(message:Message, state:FSMContext):
     await message.answer("Testlarda ismingiz telegram ismingiz orqali ro'yxatga olinadi\
- shuning uchun to'liq ismingiz bilan ro'yxatdan o'tishingizni maslahat beramiz \nIsm familyangizni yuboring: \
-\nbekor qilish uchun /start buyrug'idan foydalaning!")
+ shuning uchun to'liq ismingiz bilan ro'yxatdan o'tishingizni maslahat beramiz \nIsm familyangizni yuboring: ", reply_markup=back)
     await state.set_state("update_name")
 
 @dp.message_handler(state="update_name")
@@ -302,7 +301,7 @@ async def update_name(message: Message, state: FSMContext):
     tetx = message.text
     if tetx == "🔙 ortga":
         state.finish()
-        await message.answer(f"Yaxshi, Ism yangilishini bekor qildingiz")
+        await message.answer(f"Yaxshi, Ism yangilishini bekor qildingiz", reply_markup=main_button)
     else:
         await db.update_user_full_name(tetx, telegram_id=message.from_user.id)
         await message.answer(f"Ism Familyangiz muvaffaqiyatli yangilandi!\n\

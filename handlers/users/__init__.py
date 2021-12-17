@@ -1,4 +1,5 @@
 from . import participated
+from . import certificat
 from . import help
 from . import back_handler
 from . import start

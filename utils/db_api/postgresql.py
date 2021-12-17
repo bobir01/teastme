@@ -233,3 +233,8 @@ class Database:
         select ROW_NUMBER () over (order by test_number), test_number, answers, results, submition_time from test_config
 where user_id = $1 order by submition_time"""
         return await self.execute(sql, user_id, fetch=True)
+
+    async def data_for_certi(self, user_id, test_number):
+        sql = """
+        select results from test_config  where user_id = $1  and  test_number = $2 """
+        return await self.execute(sql, user_id, test_number, fetch=True)

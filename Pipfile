@@ -9,6 +9,7 @@ environs = "~=8.0.0"
 asyncpg = "*"
 telegraph = {extras = ["aio"], version = "*"}
 aiograph = "*"
+pillow = "*"
 
 [dev-packages]
 

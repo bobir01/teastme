@@ -12,7 +12,8 @@ main_button = ReplyKeyboardMarkup(
             KeyboardButton(text="ℹ️Mening testlarim"),           
         ],
         [
-            KeyboardButton(text="🔄Ismni yangilash")
+            KeyboardButton(text="🔄Ismni yangilash"),
+            KeyboardButton(text="Sertifikat")
         ]
     ],resize_keyboard=True
 )
