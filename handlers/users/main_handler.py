@@ -235,6 +235,7 @@ async def my_tests(message: types.Message, state:FSMContext):
                 full_info = f"Test raqami <b>{my_test[0]}</b>\n Test nomi   <b>{my_test[1]}</b>\n Test javobi  <b>{my_test[2]}</b>\n Boshlanish vaqti  \
 <b>{my_test[3]}</b>\n Tugash vaqti   {my_test[4]}\n\n Qatnashuvchilar soni: {await db.count_participants_via_test(int(my_test[0]))}"
                 dashboard = await db.select_dashboard(int(t_number))
+                dashboard_admin = await db.select_dashboard_admin(int(t_number))
                 print(dashboard)
                 if dashboard:     
                     print("if ga kirish")
@@ -247,6 +248,13 @@ async def my_tests(message: types.Message, state:FSMContext):
                         text +=f" Natija: <b>{x[3]}</b><br>"
                         text +=f" Raqam: <b>{x[4]}</b><br><br>"
                     print("shu yerga keldi")
+                    admin = f"{int(t_number)} raqamli test natijalari <br>"
+                    for ab in dashboard_admin:
+                        admin +=f"{ab[0]}.🏅"
+                        admin +=f" Ism: <b>{ab[1]}</b>"
+                        admin +=f" Javoblar:  <b>{ab[2]}</b>"
+                        admin +=f" Natija: <b>{ab[3]}</b><br><br>"
+                        
 
 #======================================telegraph===========================================================================
                     try:                 
@@ -257,6 +265,7 @@ async def my_tests(message: types.Message, state:FSMContext):
                         # print(telegraph.create_account(short_name='Bobir_Mardonov', author_name='Bobir Mardonov', author_url="http://t.me/Bobir_Mardonov"))
                         await telegraph.create_account('Bobir_Mardonov')
                         page = await telegraph.create_page(title=f"Qatnashuvchilar reyting testi {my_test[0]} {my_test[1]}",content=f"<p>{text}</p>")
+                        page_admin = await telegraph.create_page(title=f"Qatnashuvchilar reyting testi {my_test[0]} {my_test[1]}",content=f"<p>{admin}</p>")
                         print('Created page:', page.url)
                     except:
                         pass
@@ -264,16 +273,23 @@ async def my_tests(message: types.Message, state:FSMContext):
                     finally:
                         await telegraph.close()
                     
-                
-                    
                     result_button = InlineKeyboardMarkup(
                         inline_keyboard=[
                             [
                             InlineKeyboardButton(text="Natijalarni ko'rish 🚀", url=f"{page.url}")
                             ],
                         ])
+
+                    result_button_admin = InlineKeyboardMarkup(
+                        inline_keyboard=[
+                            [
+                            InlineKeyboardButton(text="Natijalarni ko'rish (Admin)🚀", url=f"{page_admin.url}")
+                            ],
+                        ])
                     
                     await message.answer(full_info,reply_markup=result_button)
+                    await asyncio.sleep(2)
+                    await message.answer(full_info,reply_markup=result_button_admin)
                     await state.finish()
                 else:
                     await message.answer("Qatnashchilar topilmadi ")

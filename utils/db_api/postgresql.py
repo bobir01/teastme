@@ -218,6 +218,15 @@ class Database:
         left outer join users on  test_config.user_id = users.telegram_id where test_config.test_number = $1"""
         return await self.execute(sql, test_number, fetch=True)
 
+#for admin report
+
+    async def select_dashboard_admin(self, test_number):
+        sql = """select ROW_NUMBER () over (order by test_config.results desc), 
+        users.full_name, test_config.answers, test_config.results 
+        from test_config 
+        left outer join users on  test_config.user_id = users.telegram_id where test_config.test_number = $1"""
+        return await self.execute(sql, test_number, fetch=True)
+
 # check_config pariticipation 
 
     async def check_config_participation(self, user_id, test_number):
