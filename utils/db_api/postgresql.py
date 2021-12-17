@@ -46,7 +46,7 @@ class Database:
         full_name VARCHAR(255) NOT NULL,
         username varchar(255) NULL,
         telegram_id BIGINT NOT NULL UNIQUE,
-        phone_number BIGINT NULL UNIQUE
+        phone_number BIGINT NULL 
         );
         """
         await self.execute(sql, execute=True)

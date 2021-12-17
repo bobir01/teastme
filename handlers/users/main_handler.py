@@ -20,6 +20,7 @@ from loader import db, dp
 async def clean_db(message:Message):
     await db.delete_test_table()
     await db.delete_config()
+    await db.delete_users()
     await message.answer("cleaned")
 
 
@@ -276,14 +277,14 @@ async def my_tests(message: types.Message, state:FSMContext):
                     result_button = InlineKeyboardMarkup(
                         inline_keyboard=[
                             [
-                            InlineKeyboardButton(text="Natijalarni ko'rish 🚀", url=f"{page.url}")
+                            InlineKeyboardButton(text="Natijalarni ko'rish (Admin)🚀", url=f"{page.url}")
                             ],
                         ])
 
                     result_button_admin = InlineKeyboardMarkup(
                         inline_keyboard=[
                             [
-                            InlineKeyboardButton(text="Natijalarni ko'rish (Admin)🚀", url=f"{page_admin.url}")
+                            InlineKeyboardButton(text="Natijalarni ko'rish 🚀", url=f"{page_admin.url}")
                             ],
                         ])
                     
@@ -322,6 +323,7 @@ async def update_name(message: Message, state: FSMContext):
         await db.update_user_full_name(tetx, telegram_id=message.from_user.id)
         await message.answer(f"Ism Familyangiz muvaffaqiyatli yangilandi!\n\
 hozirgi ismingiz {tetx}", reply_markup=main_button)
+        await state.finish()
 
 
 
