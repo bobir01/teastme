@@ -80,6 +80,10 @@ class Database:
         sql = "UPDATE Users SET full_name=$1 WHERE telegram_id=$2"
         return await self.execute(sql, full_name, telegram_id, execute=True)
 
+    async def update_user_phone(self, phone_number, telegram_id):
+        sql = "UPDATE Users SET phone_number=$1 WHERE telegram_id=$2"
+        return await self.execute(sql, phone_number, telegram_id, execute=True)
+
     async def delete_users(self):
         await self.execute("DELETE FROM Users WHERE TRUE", execute=True)
 

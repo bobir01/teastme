@@ -13,6 +13,26 @@ from loader import db, dp
 
 @dp.message_handler(text="✅Test topshirish")
 async def precheck_answers(message: Message, state: FSMContext):
+    await message.answer("Iltimos Testga qatnashishdan oldin hozirda faol bo'lgan raqamingizni kiriting \
+bu siz bilan bog'lanish uchun. Agar raqam kiritmasangiz testga qatnasha olmaysiz \
+\nMasalan: 991234567", reply_markup=back)
+    await state.set_state("phone_num")
+
+
+
+@dp.message_handler(state="phone_num")
+async def check_test_number(message: Message, state: FSMContext):
+    num = message.text
+    if len(num)==9:
+        await db.update_user_phone(int(num), telegram_id=message.from_user.id)
+        await state.set_state("pre_test_number")
+    else:
+        await message.answer("Iltimos raqamni yana bir tekshirib ko'ring", reply_markup=back)
+
+
+@dp.message_handler(state="pre_test_number")
+async def check_test_number(message: Message, state: FSMContext):
+
     await message.answer("Test raqamini yuboring, \n\n bekor qilish uchun esa ortga tugmasidan foydaling", reply_markup=back)
     await state.set_state("test_number")
 
