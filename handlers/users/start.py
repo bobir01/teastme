@@ -44,7 +44,7 @@ async def bot_start(message: types.Message, state: FSMContext):
         if status:
             a = await message.answer(f"@botlinki - bu sizning \
 yordamchingiz 😊.\n\nSiz bot yordamida o'z auditoriyangizdan \
-testlar olishingiz mumkin. \n\nFoydalanish bo'yicha to'liq ma'lumot olish uchun /yordam buyrug'idan foydalaning", reply_markup=main_button)
+testlar olishingiz mumkin. \n\nFoydalanish bo'yicha to'liq ma'lumot olish uchun /help buyrug'idan foydalaning", reply_markup=main_button)
             
             
             

@@ -11,7 +11,7 @@ from datetime import datetime
 from keyboards.default.skip_date_keyboard import skip_button
 from keyboards.default.back import back
 from keyboards.default.main_menu import main_button
-
+from data.config import ADMINS
 from loader import db, dp
 
 
@@ -27,10 +27,13 @@ async def clean_db(message:Message):
 # to collect all messages of user in one message with state 
 @dp.message_handler(text="🧑‍💻Test yaratish", state="*")
 async def bot_start(message: types.Message, state: FSMContext):
-    await message.answer("Demak yangi test qo'shmoqchisiz, yaxshi, testni qanday nomlaymiz ?", reply_markup=back)
-    await state.set_state("test_name")
-
-
+    if str(message.from_user.id) in ADMINS:
+            
+        await message.answer("Demak yangi test qo'shmoqchisiz, yaxshi, testni qanday nomlaymiz ?", reply_markup=back)
+        await state.set_state("test_name")
+    else:
+        await message.answer("Afsus siz test yarata olmaysiz. Faqat adminlar test yaratishadi", reply_markup=back)
+        await state.finish()
 @dp.message_handler(state="test_name")
 async def bot_start(message: types.Message, state: FSMContext):
     test = message.text
