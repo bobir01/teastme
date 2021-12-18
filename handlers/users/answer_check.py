@@ -41,7 +41,7 @@ async def check_test_number(message: Message, state: FSMContext):
         number = int(message.text)
         if await db.check_config_participation(message.from_user.id, test_number=number):
             await message.answer("Siz oldin bu testda qatnashgansiz siz bitta testga bir\
-marta qatnasha olasiz boshqa testlarga harakat qilib ko'ring", reply_markup=back)
+marta qatnasha olasiz boshqa testlarga qatnashishga harakat qilib ko'ring", reply_markup=back)
         else:
                 
             current_test_number = await db.select_inserted_test_number()
@@ -63,7 +63,7 @@ marta qatnasha olasiz boshqa testlarga harakat qilib ko'ring", reply_markup=back
                     else:
                         if end > now:
                             print(end, now)
-                            await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli bo'ling sizda faqatgina bitta javob yuborish imkoni bor", reply_markup=back)
+                            await message.answer("endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli bo'ling sizda faqatgina bitta javob yuborish imkoni bor", reply_markup=back)
                             await state.set_state("check_answers")
                             await state.update_data({
                                 "test_number" : number
@@ -81,7 +81,7 @@ marta qatnasha olasiz boshqa testlarga harakat qilib ko'ring", reply_markup=back
                         await state.update_data({
                                     "test_number" : number
                                 })
-                        await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
+                        await message.answer("endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                 elif end and not start:
                     end = datetime(int(end[6:10]), int(end[3:5]), int(end[:2]), int(end[11:13]), int(end[14:16]))
@@ -122,31 +122,37 @@ async def check_answers(message: Message, state: FSMContext):
     answers = await db.select_test_all_data(test_number=data["test_number"])
     
     true_answers = answers['answers']
+
+    list1_user = []
+    list2_true = []
+
     togri_javob = 0
     notogri_javob = 0
 
     if len(user_answer) == len(true_answers):
             
-        list1 = []
-        list2 = []
-        for i in true_answers.lower():
-            list1.append(i)
-        for y in user_answer.lower():
-            list2.append(y)
-        for test1 in range(len(list2)):
-            if list2[test1] == list1[test1]:
+        for i in range(1, len(user_answer), 2):
+            list1_user.append(user_answer[i].lower())
+
+        for y in range(1, len(true_answers), 2):
+            list2_true.append(true_answers[y].lower())
+
+        for test1 in range(len(list2_true)):
+            if list2_true[test1] == list1_user[test1]:
                 togri_javob += 1
             else:
                 notogri_javob += 1
 
+
+
         await message.answer(f"Javoblaringiz qabul qilindi \nto'g'ri javoblar soni: {togri_javob}\nreyting \
-natijalarini test ykunlangandan keyin olasiz sog' bo'ling!", reply_markup=main_button)
+natijalarini test yakunlangandan keyin olasiz sog' bo'ling!", reply_markup=main_button)
         await db.insert_test_config(int(data["test_number"]), message.from_user.id, user_answer, int(togri_javob), datetime.now())
         await state.finish()
 
     else:
-        await message.answer(f"Siz yuborgan javoblar soni {len(user_answer)} umumiy test savollari soniga teng emas \
-\nbilmagan savollarinizni taxminiy harflar bilan belgilang!", reply_markup=back)
+        await message.answer(f"Siz yuborgan javoblar soni {int(len(user_answer)/2)} umumiy test savollari soniga teng emas \
+\nbilmagan savollarinizni tahminiy harflar bilan belgilang!", reply_markup=back)
 # bazaga kiritamiz 
     
 
