@@ -21,13 +21,16 @@ from loader import db, dp
 
 @dp.message_handler(text="Sertifikat")
 async def certificat(message:Message, state: FSMContext):
-    await message.answer("Yaxshi qatnashgan testingiz raqamini yuboring:")
+    await message.answer("Yaxshi qatnashgan testingiz raqamini yuboring:", reply_markup=back)
     await state.set_state("test_num_certificat")
 
 
 @dp.message_handler(state="test_num_certificat")
 async def certificat(message:Message, state: FSMContext):
     test_num = message.text
+    if test_num == "🔙 ortga":
+        await state.finish()
+        
     if test_num.isdigit():
         score = await db.data_for_certi(user_id=message.from_user.id, test_number=int(test_num))
         if score: 

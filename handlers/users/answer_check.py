@@ -93,17 +93,17 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                    
                                     "test_number" : number
                                 })
-                        await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
+                        await message.answer("endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                     else:
-                        await message.answer("Afsus bu test allaqachon tugagan 😔 \nbosh menuga qaytish uchun /start  bosing", reply_markup=back)
+                        await message.answer("Afsus bu test allaqachon tugagan 😔 ", reply_markup=back)
                         await state.finish()
                 else:  # ikkalasiyam skip bo'lsa 
                     await state.set_state("check_answers")
                     await state.update_data({                                      
                                     "test_number" : number
                                 })
-                    await message.answer("endi javoblarni yuboring \n Masalan : abcdabcds\n E'tiborli \
+                    await message.answer("endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
 
     else:
@@ -158,22 +158,5 @@ natijalarini test yakunlangandan keyin olasiz sog' bo'ling!", reply_markup=main_
 
 
 
-#=====================================================================================================
+#=================================================================================================
 
-
-dp.message_handler(text="/start")
-async def participated_tests(message:Message):
-    # logging.info(message)
-    # datas = await db.participated_tests(user_id=message.from_user.id)
-    # logging.info(datas)
-    my_tests = "Siz qatnashgan testlar bo'yicha jami ma'lumot"
-    counter = 0
-    # for data in datas:
-    #     my_tests+=f" {data[0]}"
-    #     my_tests+=f"Test raqami: {data[1]}\n"
-    #     my_tests+=f"Javoblar: {data[2]}\n"
-    #     my_tests+=f"Natija: {data[3]}\n"
-    #     my_tests+=f"Topshirilgan : {data[4]}\n"
-    #     counter +=1
-    my_tests +=f"<b>Barcha qatnashilgan testlar soni</b>: {counter}"
-    await message.answer(my_tests, reply_markup=main_button)

@@ -14,6 +14,9 @@ main_button = ReplyKeyboardMarkup(
         [
             KeyboardButton(text="🔄Ismni yangilash"),
             KeyboardButton(text="Sertifikat")
+        ],
+        [
+            KeyboardButton(text="☎️Aloqa (Admin bilan)"),
         ]
     ],resize_keyboard=True
 )

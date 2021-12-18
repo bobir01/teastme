@@ -22,7 +22,8 @@ va g'liblarni taqdirlashingiz mumkin \n\n<b>Test topshirish </b>orqali testlarda
  mumkin va albatta test yakunida sertifikatga ega bo'lasiz!\n\n \
 <b>Mening testlarim</b>(adminlar uchun) orqali siz yaratgan testlaringiz haqida to'liqroq ma'lumot olasiz\n\n \
 <b>Mening natijalarim </b>orqali siz o'z bilim olish darajangizni nazorat qilib borsangiz bo'ladi bot \
-sizga qanday natija va yutuqlarga erishganingizni ko'rsatadi\n")
+sizga qanday natija va yutuqlarga erishganingizni ko'rsatadi\n \
+Dasturchilar bilan bog'lanish uchun @Bobir_Mardonov @Sabirbaev_Amir")
     
     await message.answer("\n".join(text))
     
