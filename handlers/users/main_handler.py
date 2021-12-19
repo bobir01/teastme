@@ -199,25 +199,28 @@ async def bot_start(message: types.Message, state: FSMContext):
 
 @dp.message_handler(text="ℹ️Mening testlarim")
 async def my_tests(message: types.Message, state:FSMContext):
-    my_test = await db.select_test_numbers(message.from_user.id)
-    my_tests = "Test raqami:    Test nomi\n"
-    if my_test:
+    if str(message.from_user.id) in ADMINS:
             
-        for test in my_test:
-            my_tests +=f"{test[0]}                   |      {test[1]} \n"
-            my_tests +="____________________________\n"
+        my_test = await db.select_test_numbers(message.from_user.id)
+        my_tests = "Test raqami:    Test nomi\n"
+        if my_test:
+                
+            for test in my_test:
+                my_tests +=f"{test[0]}                   |      {test[1]} \n"
+                my_tests +="____________________________\n"
+        else:
+            await message.answer("Siz hali test yaratmagansiz \nyaratish uchun Test yaratish buyrug'ini tanlang")
+        
+        counts = await db.count_user_tests(message.from_user.id)
+        my_tests += f"Sizning jami testlaringiz soni  {counts}\n\n"
+        my_tests += "@Olimpiada_stepup_bot"
+
+        await message.answer(my_tests, reply_markup=ReplyKeyboardRemove())
+        await state.set_state("test_results")
+        await message.answer("Test qatnashchilari va ularning natijalarini ko'rish uchun test raqamini yuboring", reply_markup=back)
     else:
-        await message.answer("Siz hali test yaratmagansiz \nyaratish uchun Test yaratish buyrug'ini tanlang")
-    
-    counts = await db.count_user_tests(message.from_user.id)
-    my_tests += f"Sizning jami testlaringiz soni  {counts}\n\n"
-    my_tests += "@Olimpiada_stepup_bot"
-
-    await message.answer(my_tests, reply_markup=ReplyKeyboardRemove())
-    await state.set_state("test_results")
-    await message.answer("Test qatnashchilari va ularning natijalarini ko'rish uchun test raqamini yuboring", reply_markup=back)
-   
-
+        await message.answer("Siz test yaratmagansiz bu tugma faqat adminlar uchun", reply_markup=main_button)
+        await state.finish()
 
 
 @dp.message_handler(state="test_results")
