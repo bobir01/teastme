@@ -96,7 +96,7 @@ qachon yakunlanadi ?\nVaqtni <b>KK.OO.YYYY SS:MM </b>ko'rinishida\
 kiriting, bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\n\nMM -\
 minut\nMasalan: {day}.{month}.{year} {hours}:{minute}", reply_markup=skip_button)
                 else:
-                    await message.answer("O'tib ketgan vaqtda testni boshlay olmayman boshqa sana kiritib ko'ring")
+                    await message.answer("O'tib ketgan vaqtda testni boshlay bo'lmaydi boshqa sana kiriting")
             except:
                 await message.answer("Sana formatini xato kiritdingiz qayta tekshiring!", reply_markup=back)
         else:
@@ -138,10 +138,10 @@ async def bot_start(message: types.Message, state: FSMContext):
                     await state.update_data({
                         "end_time" : test
                     })
-                    await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=back)
+                    await message.answer("Sanalar muvaffaqiyatli saqlandi, endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=back)
                     await state.set_state("answers")
                 else:
-                    await message.answer("Tugashni boshlashdan oldin qilishning ilojin yo'q ", reply_markup=back)
+                    await message.answer("Tugashni boshlashdan oldin qilishning iloji yo'q", reply_markup=back)
             except:
                 await message.answer("Sana formatini xato kiritdingiz qayta tekshiring!", reply_markup=back)
         else:
@@ -180,18 +180,18 @@ async def bot_start(message: types.Message, state: FSMContext):
         # to return current test number from database 
         current_test_number = await db.select_inserted_test_number()
         
-        all_info = f"sizning testingiz\n\
-#️⃣ Test raqami: <b>{current_test_number}</b>\n\
-📌 Test nomi: <i>{data['test_name']}</i>\n\
-🟢Boshlanish vaqti - <i>{data['start_time']}</i>\n\n\
+        all_info = f"Sizning testingiz\n\n\
+#️⃣Test raqami: <b>{current_test_number}</b>\n\
+📌Test nomi: <i>{data['test_name']}</i>\n\
+🟢Boshlanish vaqti - <i>{data['start_time']}</i>\n\
 🔴Tugash vaqti - <i>{data['end_time']}</i>\n\n\
 @Olimpiada_stepup_bot beminnat yordamchingiz!"
         await message.answer(all_info)
 
-        await message.answer(f"sizning testingiz\n\
-#️⃣ Test raqami: <b>{current_test_number}</b>\n\
-📌 Test nomi: <i>{data['test_name']}</i>\n\
-🔐 To'g'ri javoblar: <i>{data['answers']}</i>\n\n\
+        await message.answer(f"Sizning testingiz\n\n\
+#️⃣Test raqami: <b>{current_test_number}</b>\n\
+📌Test nomi: <i>{data['test_name']}</i>\n\
+🔐To'g'ri javoblar: <i>{data['answers']}</i>\n\n\
 🟢Boshlanish vaqti - <i>{data['start_time']}</i>\n\n\
 🔴Tugash vaqti - <i>{data['end_time']}</i>\n\n\
 @Olimpiada_stepup_bot beminnat yordamchingiz!", reply_markup=main_button)
@@ -200,22 +200,22 @@ async def bot_start(message: types.Message, state: FSMContext):
 @dp.message_handler(text="ℹ️Mening testlarim")
 async def my_tests(message: types.Message, state:FSMContext):
     my_test = await db.select_test_numbers(message.from_user.id)
-    my_tests = "test raqami:    test nomi\n"
+    my_tests = "Test raqami:    Test nomi\n"
     if my_test:
             
         for test in my_test:
             my_tests +=f"{test[0]}                   |      {test[1]} \n"
             my_tests +="____________________________\n"
     else:
-        await message.answer("siz hali test yaratmadingiz \nyaratish uchun Test yaratish buyrug'ini tanlang")
+        await message.answer("Siz hali test yaratmagansiz \nyaratish uchun Test yaratish buyrug'ini tanlang")
     
     counts = await db.count_user_tests(message.from_user.id)
-    my_tests += f" sizning jami testlariniz soni  {counts}\n\n"
-    my_tests += "@current_time_123bot"
+    my_tests += f"Sizning jami testlaringiz soni  {counts}\n\n"
+    my_tests += "@Olimpiada_stepup_bot"
 
     await message.answer(my_tests, reply_markup=ReplyKeyboardRemove())
     await state.set_state("test_results")
-    await message.answer("Natijalar bilan ko'rish uchun test raqamini yuboring", reply_markup=back)
+    await message.answer("Test qatnashchilari va ularning natijalarini ko'rish uchun test raqamini yuboring", reply_markup=back)
    
 
 
@@ -228,7 +228,7 @@ async def my_tests(message: types.Message, state:FSMContext):
             
         if t_number == "🔙 ortga":
             state.finish()
-            await message.answer("Siz test topshirishni bekor qildingiz")
+            await message.answer("")
         else:
             
 
@@ -244,7 +244,7 @@ async def my_tests(message: types.Message, state:FSMContext):
                 if dashboard:     
                     print("if ga kirish")
 
-                    text = f"{int(t_number)} raqamli test natijalari <br>"
+                    text = f"{int(t_number)}-raqamli test natijalari <br>"
                     for x in dashboard:
                         text +=f"{x[0]}.🏅"
                         text +=f" Ism: <b>{x[1]}</b>"
@@ -252,7 +252,7 @@ async def my_tests(message: types.Message, state:FSMContext):
                         text +=f" Natija: <b>{x[3]}</b><br>"
                         text +=f" Raqam: <b>{x[4]}</b><br><br>"
                     print("shu yerga keldi")
-                    admin = f"{int(t_number)} raqamli test natijalari <br>"
+                    admin = f"{int(t_number)}-raqamli test natijalari <br>"
                     for ab in dashboard_admin:
                         admin +=f"{ab[0]}.🏅"
                         admin +=f" Ism: <b>{ab[1]}</b>"
@@ -268,8 +268,8 @@ async def my_tests(message: types.Message, state:FSMContext):
                         # telegraph = Telegraph()
                         # print(telegraph.create_account(short_name='Bobir_Mardonov', author_name='Bobir Mardonov', author_url="http://t.me/Bobir_Mardonov"))
                         await telegraph.create_account('Bobir_Mardonov')
-                        page = await telegraph.create_page(title=f"Qatnashuvchilar reyting testi {my_test[0]} {my_test[1]}",content=f"<p>{text}</p>")
-                        page_admin = await telegraph.create_page(title=f"Qatnashuvchilar reyting testi {my_test[0]} {my_test[1]}",content=f"<p>{admin}</p>")
+                        page = await telegraph.create_page(title=f"{my_test[1]} Testi natijalari",content=f"<p>{text}</p>")
+                        page_admin = await telegraph.create_page(title=f"{my_test[1]} Testi natijalari",content=f"<p>{admin}</p>")
                         print('Created page:', page.url)
                     except:
                         pass
@@ -299,13 +299,13 @@ async def my_tests(message: types.Message, state:FSMContext):
                     await message.answer("Qatnashchilar topilmadi ")
                     await state.finish()
             else:
-                await message.answer(f"{int(t_number)} raqamli test sizga tegishli emas yoki unda hech kim qatnashmagan", reply_markup=back)
+                await message.answer(f"{int(t_number)}-raqamli test sizga tegishli emas yoki unda hech kim qatnashmagan", reply_markup=back)
             
 
     
             # await message.answer(f"{t_number} ❌ iltimos faqat sonlardan foydalaning  ", reply_markup=back)
     else:
-        await message.answer(f"{t_number} ❌ iltimos faqat sonlardan foydalaning! ", reply_markup=back)
+        await message.answer(f"{t_number} ❌ Iltimos faqat sonlardan foydalaning! ", reply_markup=back)
 
 
 

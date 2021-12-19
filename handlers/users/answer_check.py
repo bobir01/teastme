@@ -41,13 +41,13 @@ async def check_test_number(message: Message, state: FSMContext):
     if number.isdigit():
         number = int(message.text)
         if await db.check_config_participation(message.from_user.id, test_number=number):
-            await message.answer("Siz oldin bu testda qatnashgansiz siz bitta testga bir\
+            await message.answer("Siz oldin bu testda qatnashgansiz, siz bitta testga bir\
 marta qatnasha olasiz boshqa testlarga qatnashishga harakat qilib ko'ring", reply_markup=back)
         else:
                 
             current_test_number = await db.select_inserted_test_number()
             if number>current_test_number:
-                await message.answer(f"{number}- raqamli test mavjud emas qayta urib ko'ring")
+                await message.answer(f"{number}-raqamli test mavjud emas qayta urib ko'ring")
             else:
                 test_data = await db.select_test_all_data(test_number=number)
                 start = test_data["start_date"]
@@ -64,13 +64,13 @@ marta qatnasha olasiz boshqa testlarga qatnashishga harakat qilib ko'ring", repl
                     else:
                         if end > now:
                             print(end, now)
-                            await message.answer("endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli bo'ling sizda faqatgina bitta javob yuborish imkoni bor", reply_markup=back)
+                            await message.answer("Endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli bo'ling sizda faqatgina bitta javob yuborish imkoni bor", reply_markup=back)
                             await state.set_state("check_answers")
                             await state.update_data({
                                 "test_number" : number
                             })
                         else:
-                            await message.answer("Afsus bu test allaqachon tugagan 😔 \nbosh menuga qaytish uchun /start  bosing", reply_markup=back)
+                            await message.answer("Afsus bu test allaqachon tugagan 😔 \n", reply_markup=back)
                             await state.finish()
                 elif start and not end:
                     now = datetime.now()
@@ -82,7 +82,7 @@ marta qatnasha olasiz boshqa testlarga qatnashishga harakat qilib ko'ring", repl
                         await state.update_data({
                                     "test_number" : number
                                 })
-                        await message.answer("endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
+                        await message.answer("Endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                 elif end and not start:
                     end = datetime(int(end[6:10]), int(end[3:5]), int(end[:2]), int(end[11:13]), int(end[14:16]))
@@ -94,7 +94,7 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                    
                                     "test_number" : number
                                 })
-                        await message.answer("endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
+                        await message.answer("Endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                     else:
                         await message.answer("Afsus bu test allaqachon tugagan 😔 ", reply_markup=back)
@@ -104,7 +104,7 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                     await state.update_data({                                      
                                     "test_number" : number
                                 })
-                    await message.answer("endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
+                    await message.answer("eEdi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
 
     else:
