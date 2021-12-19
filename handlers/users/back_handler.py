@@ -11,7 +11,7 @@ from loader import dp
 async def clean_db(message:Message, state: FSMContext):
     await state.finish()
     await message.delete()
-    data = await message.answer(f"@botlinki - bu sizning \
+    data = await message.answer(f"@Olimpiada_stepup_bot - bu sizning \
 yordamchingiz 😊.\n\nSiz bot yordamida o'z auditoriyangizdan \
-testlar olishingiz mumkin. \n\nFoydalanish bo'yicha to'liq ma'lumot olish uchun /yordam buyrug'idan foydalaning", reply_markup=main_button)
+testlar olishingiz mumkin. \n\nFoydalanish bo'yicha to'liq ma'lumot olish uchun /help buyrug'idan foydalaning", reply_markup=main_button)
     

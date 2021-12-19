@@ -29,7 +29,7 @@ async def clean_db(message:Message):
 async def bot_start(message: types.Message, state: FSMContext):
     if str(message.from_user.id) in ADMINS:
             
-        await message.answer("Demak yangi test qo'shmoqchisiz, yaxshi, testni qanday nomlaymiz ?", reply_markup=back)
+        await message.answer("Demak yangi test qo'shmoqchisiz, testni qanday nomlaymiz ?", reply_markup=back)
         await state.set_state("test_name")
     else:
         await message.answer("Afsus siz test yarata olmaysiz. Faqat adminlar test yaratishadi", reply_markup=back)
@@ -39,7 +39,7 @@ async def bot_start(message: types.Message, state: FSMContext):
     test = message.text
     if test == "🔙 ortga":
         
-        await message.answer("Yaxshi siz test yaratishni bekor qildingiz")
+        await message.answer("Siz test yaratishni bekor qildingiz")
     else:
             
         await state.update_data({
@@ -55,7 +55,7 @@ async def bot_start(message: types.Message, state: FSMContext):
         minute = x.strftime("%M")
 
         
-        await message.answer(f"Yaxshi, ushbu test qachon \
+        await message.answer(f"Ushbu test qachon \
 boshlanadi ?\n\nVaqtni <b>KK.OO.YYYY SS:MM </b>ko'rinishida kiriting,\
 bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\nMM - minut\n\nMasalan: {day}.{month}.{year} {hours}:{minute}", reply_markup=skip_button)
         
@@ -67,7 +67,7 @@ async def bot_start(message: types.Message, state: FSMContext):
     test = message.text
     if test == "🔙 ortga":
         state.finish()
-        await message.answer("Yaxshi siz test yaratishni bekor qildingiz")
+        await message.answer("Siz test yaratishni bekor qildingiz")
     else:
         x = datetime.now()
         day = x.strftime("%d")
@@ -116,7 +116,7 @@ async def bot_start(message: types.Message, state: FSMContext):
     test = message.text
     if test == "🔙 ortga":
         state.finish()
-        await message.answer("Yaxshi siz test yaratishni bekor qildingiz")
+        await message.answer("Siz test yaratishni bekor qildingiz")
     else:
         x = datetime.now()
         if test != "skip" :
@@ -159,7 +159,7 @@ async def bot_start(message: types.Message, state: FSMContext):
     text = message.text
     if text == "🔙 ortga":
         state.finish()
-        await message.answer("Yaxshi siz test yaratishni bekor qildingiz")
+        await message.answer("Siz test yaratishni bekor qildingiz")
     else:
         await state.update_data({
             "answers" : text})
@@ -228,7 +228,7 @@ async def my_tests(message: types.Message, state:FSMContext):
             
         if t_number == "🔙 ortga":
             state.finish()
-            await message.answer("Yaxshi siz test topshirishni bekor qildingiz")
+            await message.answer("Siz test topshirishni bekor qildingiz")
         else:
             
 
@@ -294,7 +294,7 @@ async def my_tests(message: types.Message, state:FSMContext):
                     await message.answer(full_info,reply_markup=result_button)
                     await asyncio.sleep(2)
                     await message.answer(full_info,reply_markup=result_button_admin)
-                    await state.finish()
+                    await state.set_state("test_results")
                 else:
                     await message.answer("Qatnashchilar topilmadi ")
                     await state.finish()
@@ -321,7 +321,7 @@ async def update_name(message: Message, state: FSMContext):
     tetx = message.text
     if tetx == "🔙 ortga":
         state.finish()
-        await message.answer(f"Yaxshi, Ism yangilishini bekor qildingiz", reply_markup=main_button)
+        await message.answer(f"Ism yangilishini bekor qildingiz", reply_markup=main_button)
     else:
         await db.update_user_full_name(tetx, telegram_id=message.from_user.id)
         await message.answer(f"Ism Familyangiz muvaffaqiyatli yangilandi!\n\
