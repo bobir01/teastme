@@ -104,7 +104,7 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                     await state.update_data({                                      
                                     "test_number" : number
                                 })
-                    await message.answer("eEdi javoblarni yuboring \n Masalan : abcdabcd\n E'tiborli \
+                    await message.answer("Endi javoblarni yuboring \n Masalan : abcdabcd\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
 
     else:
