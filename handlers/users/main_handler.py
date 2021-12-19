@@ -93,18 +93,18 @@ async def bot_start(message: types.Message, state: FSMContext):
                     await state.set_state("end_time")
                     await message.answer(f"Boshlanish vaqti saqlandi,\
 qachon yakunlanadi ?\nVaqtni <b>KK.OO.YYYY SS:MM </b>ko'rinishida\
-kiriting, bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\n\nMM -\
-minut\nMasalan: {day}.{month}.{year} {hours}:{minute}", reply_markup=skip_button)
+kiriting, bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\nMM -\
+minut\n\nMasalan: {day}.{month}.{year} {hours}:{minute}", reply_markup=skip_button)
                 else:
                     await message.answer("O'tib ketgan vaqtda testni boshlay bo'lmaydi boshqa sana kiriting")
             except:
                 await message.answer("Sana formatini xato kiritdingiz qayta tekshiring!", reply_markup=back)
         else:
             await state.set_state("end_time")
-            await message.answer(f"Boshlanish vaqti saqlandi,\
-qachon yakunlanadi ?\nVaqtni KK.OO.YYYY SS:MM ko'rinishida\
-kiriting, bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\n\nMM -\
-minut\nMasalan: <b>{day}.{month}.{year} {hours}:{minute}</b>", reply_markup=skip_button)
+            await message.answer(f"Boshlanish vaqti saqlandi,\n\n\
+qachon yakunlanadi ?\n\nVaqtni KK.OO.YYYY SS:MM ko'rinishida\
+kiriting, bunda\n\nYYYY - yil\nKK - kun\nOO - Oy\n\nSS - soat\nMM -\
+minut\\nnMasalan: <b>{day}.{month}.{year} {hours}:{minute}</b>", reply_markup=skip_button)
     
             await state.update_data({
                         "start_time" : test
@@ -138,7 +138,7 @@ async def bot_start(message: types.Message, state: FSMContext):
                     await state.update_data({
                         "end_time" : test
                     })
-                    await message.answer("Sanalar muvaffaqiyatli saqlandi, endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=back)
+                    await message.answer("Sanalar muvaffaqiyatli saqlandi, javoblarni yuboring \nMasalan: abcdabcd", reply_markup=back)
                     await state.set_state("answers")
                 else:
                     await message.answer("Tugashni boshlashdan oldin qilishning iloji yo'q", reply_markup=back)
