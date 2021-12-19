@@ -42,7 +42,7 @@ async def bot_start(message: types.Message, state: FSMContext):
         status = await check(user_id=message.from_user.id, channel=channel)
         channel = await bot.get_chat(channel)
         if status:
-            a = await message.answer(f"@botlinki - bu sizning \
+            a = await message.answer(f"@Olimpiada_stepup_bot - bu sizning \
 yordamchingiz 😊.\n\nSiz bot yordamida o'z auditoriyangizdan \
 testlar olishingiz mumkin. \n\nFoydalanish bo'yicha to'liq ma'lumot olish uchun /help buyrug'idan foydalaning", reply_markup=main_button)
             
@@ -64,7 +64,7 @@ async def checker(call: types.CallbackQuery, state:FSMContext):
         channel = await bot.get_chat(channel)
         if status:
             await call.answer("Bajarildi") 
-            await call.message.answer(f"@botlinki - bu sizning yordamchingiz 😊.\n\nSiz bot yordamida o'z \
+            await call.message.answer(f"@Olimpiada_stepup_bot - bu sizning yordamchingiz 😊.\n\nSiz bot yordamida o'z \
 auditoriyangizdan testlar olishingiz mumkin. \n\nFoydalanish bo'yicha to'liq ma'lumot olish uchun /help buyrug'idan foydalaning", reply_markup=main_button)
             
             await bot.delete_message(chat_id=call.from_user.id,message_id=call.message.message_id)

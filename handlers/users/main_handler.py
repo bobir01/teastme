@@ -20,7 +20,7 @@ from loader import db, dp
 async def clean_db(message:Message):
     await db.delete_test_table()
     await db.delete_config()
-    await db.delete_users()
+    # await db.delete_users()
     await message.answer("cleaned")
 
 
@@ -185,7 +185,7 @@ async def bot_start(message: types.Message, state: FSMContext):
 📌 Test nomi: <i>{data['test_name']}</i>\n\
 🟢Boshlanish vaqti - <i>{data['start_time']}</i>\n\n\
 🔴Tugash vaqti - <i>{data['end_time']}</i>\n\n\
-@current_time_123bot beminnat yordamchingiz!"
+@Olimpiada_stepup_bot beminnat yordamchingiz!"
         await message.answer(all_info)
 
         await message.answer(f"sizning testingiz\n\
@@ -194,7 +194,7 @@ async def bot_start(message: types.Message, state: FSMContext):
 🔐 To'g'ri javoblar: <i>{data['answers']}</i>\n\n\
 🟢Boshlanish vaqti - <i>{data['start_time']}</i>\n\n\
 🔴Tugash vaqti - <i>{data['end_time']}</i>\n\n\
-@current_time_123bot beminnat yordamchingiz!", reply_markup=main_button)
+@Olimpiada_stepup_bot beminnat yordamchingiz!", reply_markup=main_button)
 
 
 @dp.message_handler(text="ℹ️Mening testlarim")
