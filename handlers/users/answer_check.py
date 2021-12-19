@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from aiogram.bot.bot import Bot
-from aiogram.types import Message
+from aiogram.types import Message, user
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.builtin import Command
 
@@ -64,7 +64,7 @@ marta qatnasha olasiz boshqa testlarga qatnashishga harakat qilib ko'ring", repl
                     else:
                         if end > now:
                             print(end, now)
-                            await message.answer("Endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli bo'ling sizda faqatgina bitta javob yuborish imkoni bor", reply_markup=back)
+                            await message.answer("Endi javoblarni yuboring \n Masalan : abcdabcd\n E'tiborli bo'ling sizda faqatgina bitta javob yuborish imkoni bor", reply_markup=back)
                             await state.set_state("check_answers")
                             await state.update_data({
                                 "test_number" : number
@@ -82,7 +82,7 @@ marta qatnasha olasiz boshqa testlarga qatnashishga harakat qilib ko'ring", repl
                         await state.update_data({
                                     "test_number" : number
                                 })
-                        await message.answer("Endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
+                        await message.answer("Endi javoblarni yuboring \n Masalan : abcdabcd\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                 elif end and not start:
                     end = datetime(int(end[6:10]), int(end[3:5]), int(end[:2]), int(end[11:13]), int(end[14:16]))
@@ -94,7 +94,7 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                    
                                     "test_number" : number
                                 })
-                        await message.answer("Endi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
+                        await message.answer("Endi javoblarni yuboring \n Masalan : abcdabcd\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                     else:
                         await message.answer("Afsus bu test allaqachon tugagan 😔 ", reply_markup=back)
@@ -104,7 +104,7 @@ bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
                     await state.update_data({                                      
                                     "test_number" : number
                                 })
-                    await message.answer("eEdi javoblarni yuboring \n Masalan : 1a2b3c4d5a6b\n E'tiborli \
+                    await message.answer("eEdi javoblarni yuboring \n Masalan : abcdabcd\n E'tiborli \
 bo'ling sizda faqatgina bitta javob yuborish imkoni bor!", reply_markup=back)
 
     else:
@@ -132,15 +132,11 @@ async def check_answers(message: Message, state: FSMContext):
 
     if len(user_answer) == len(true_answers):
             
-        for i in user_answer:
-            if not i.isdigit():
-                
-                list1_user.append(i.lower())
-        logging.info(list1_user)
-        for y in true_answers:
-            if not y.isdigit():
-                list2_true.append(y.lower())
-        logging.info(list2_true)
+        for i in true_answers.lower():
+            list2_true.append(i)
+        for y in user_answer.lower():
+            list1_user.append(y)
+
         for test1 in range(len(list2_true)):
             if list2_true[test1] == list1_user[test1]:
                 togri_javob += 1

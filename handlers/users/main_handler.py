@@ -149,7 +149,7 @@ async def bot_start(message: types.Message, state: FSMContext):
             await state.update_data({
                         "end_time" : test
                     })
-            await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: 1a2b3c4d5a", reply_markup=back)
+            await message.answer("Sanalar muvaffaqiyatli saqlandi endi javoblarni yuboring \nMasalan: abcdabcd", reply_markup=back)
 
 
 
@@ -295,7 +295,7 @@ async def my_tests(message: types.Message, state:FSMContext):
                         ])
                     
                     await message.answer(full_info,reply_markup=result_button)
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(1)
                     await message.answer(full_info,reply_markup=result_button_admin)
                     await state.set_state("test_results")
                 else:
