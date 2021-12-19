@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from aiogram.bot.bot import Bot
 from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.builtin import Command
@@ -7,7 +8,7 @@ from aiogram.dispatcher.filters.builtin import Command
 from datetime import datetime
 from keyboards.default.back import back
 from keyboards.default.main_menu import main_button
-from loader import db, dp
+from loader import db, dp, bot
 
 
 
@@ -131,12 +132,15 @@ async def check_answers(message: Message, state: FSMContext):
 
     if len(user_answer) == len(true_answers):
             
-        for i in range(1, len(user_answer), 2):
-            list1_user.append(user_answer[i].lower())
-
-        for y in range(1, len(true_answers), 2):
-            list2_true.append(true_answers[y].lower())
-
+        for i in user_answer:
+            if not i.isdigit():
+                
+                list1_user.append(i.lower())
+        logging.info(list1_user)
+        for y in true_answers:
+            if not y.isdigit():
+                list2_true.append(y.lower())
+        logging.info(list2_true)
         for test1 in range(len(list2_true)):
             if list2_true[test1] == list1_user[test1]:
                 togri_javob += 1
@@ -144,14 +148,18 @@ async def check_answers(message: Message, state: FSMContext):
                 notogri_javob += 1
 
 
-
-        await message.answer(f"Javoblaringiz qabul qilindi \nto'g'ri javoblar soni: {togri_javob}\nreyting \
-natijalarini test yakunlangandan keyin olasiz sog' bo'ling!", reply_markup=main_button)
+        response = f"👤Foydalanuvchi: {message.from_user.full_name}\n\n"
+        response+=f"📖 Test nomi: {answers['test_name']}\n"
+        response+=f"✏️ Jami savollar soni: {len(list2_true)}\n"
+        response+=f"✅ To'g'ri javoblar soni: {togri_javob}\n"
+        response+=f"🔣 Foiz : {(100/len(list2_true))*togri_javob} %"
+        await message.answer(response, reply_markup=main_button)
+        
         await db.insert_test_config(int(data["test_number"]), message.from_user.id, user_answer, int(togri_javob), datetime.now())
         await state.finish()
 
     else:
-        await message.answer(f"Siz yuborgan javoblar soni {int(len(user_answer)/2)} umumiy test savollari soniga teng emas \
+        await message.answer(f"Siz yuborgan javoblar soni {int(len(list2_true))} umumiy test savollari soniga teng emas \
 \nbilmagan savollarinizni tahminiy harflar bilan belgilang!", reply_markup=back)
 # bazaga kiritamiz 
     

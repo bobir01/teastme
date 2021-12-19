@@ -16,13 +16,16 @@ async def bot_help(message: types.Message):
     text = ("Buyruqlar: ",
             "/start - Botni ishga tushirish",
             "/help - Yordam\n",
-            "<b>Test yaratish</b>(faqat adminlar uchun) \
+            "<b>🧑‍💻Test yaratish</b>(faqat adminlar uchun) \
 bu orqali siz o'z auditoriyangizdan test olishingiz, reytinglashingiz \
-va g'liblarni taqdirlashingiz mumkin \n\n<b>Test topshirish </b>orqali testlarda qatnashishingiz va o'z natijangizni aniqlab olishingiz\
+va g'liblarni taqdirlashingiz mumkin \n\n<b>✅Test topshirish </b>orqali testlarda qatnashishingiz va o'z natijangizni aniqlab olishingiz\
  mumkin va albatta test yakunida sertifikatga ega bo'lasiz!\n\n \
-<b>Mening testlarim</b>(adminlar uchun) orqali siz yaratgan testlaringiz haqida to'liqroq ma'lumot olasiz\n\n \
-<b>Mening natijalarim </b>orqali siz o'z bilim olish darajangizni nazorat qilib borsangiz bo'ladi bot \
+<b>ℹ️Mening testlarim</b>(adminlar uchun) orqali siz yaratgan testlaringiz haqida to'liqroq ma'lumot olasiz\n\n \
+<b>📈Mening natijalarim</b>orqali siz o'z bilim olish darajangizni nazorat qilib borsangiz bo'ladi bot \
 sizga qanday natija va yutuqlarga erishganingizni ko'rsatadi\n \
+<b>🔄Ismni yangilash bu orqali siz test topshirishdagi ismingizni belgilashingiz mumkin \
+botimizdan foydalanishni boshlashingizdanoq ismingiz telegram ismingiz kabi qayt etiladi \
+\
 Dasturchilar bilan bog'lanish uchun @Bobir_Mardonov @Sabirbaev_Amir")
     
     await message.answer("\n".join(text))
