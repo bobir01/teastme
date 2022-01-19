@@ -112,15 +112,17 @@ class Database:
 
 # add_test to test_table 
     async def add_test(self, owner_id, test_name, answers, start_date=None, end_date=None):
-        if start_date :
-            sql = "INSERT INTO test_table(owner_id, test_name, answers ,start_date) VALUES($1, $2, $3, $4) "
-            return await self.execute(sql, owner_id, test_name, answers, start_date,   fetchrow=True)
-        elif end_date:
-            sql = "INSERT INTO test_table(owner_id, test_name, answers ,end_date) VALUES($1, $2, $3, $4) "
-            return await self.execute(sql, owner_id, test_name, answers, end_date ,  fetchrow=True)
-        elif start_date and end_date:
+        if start_date and end_date:
             sql = "INSERT INTO test_table(owner_id, test_name, answers ,start_date, end_date) VALUES($1, $2, $3, $4, $5) "
             return await self.execute(sql, owner_id, test_name, answers, start_date, end_date ,  fetchrow=True)
+        
+        elif start_date and not end_date :
+            sql = "INSERT INTO test_table(owner_id, test_name, answers ,start_date) VALUES($1, $2, $3, $4) "
+            return await self.execute(sql, owner_id, test_name, answers, start_date,   fetchrow=True)
+        elif end_date and not start_date:
+            sql = "INSERT INTO test_table(owner_id, test_name, answers ,end_date) VALUES($1, $2, $3, $4) "
+            return await self.execute(sql, owner_id, test_name, answers, end_date ,  fetchrow=True)
+        
         else:
             sql = "INSERT INTO test_table(owner_id, test_name, answers) VALUES($1, $2, $3) "
             return await self.execute(sql, owner_id, test_name, answers, fetchrow=True)
